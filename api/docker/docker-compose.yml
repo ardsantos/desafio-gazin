@@ -1,0 +1,10 @@
+services:
+  desafio-gazin-db:
+    container_name: 'desafio-gazin-db'
+    image: postgres
+    environment:
+      - 'POSTGRES_DB=desafio-gazin-db'
+      - 'POSTGRES_USER=root'
+      - 'POSTGRES_PASSWORD=root'
+    ports:
+      - '5432:5432'

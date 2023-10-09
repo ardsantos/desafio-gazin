@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Nivel {
+  id    Int    @id @default(autoincrement())
+  nivel String
+
+  Desenvolvedor Desenvolvedor[]
+
+  @@map("niveis")
+}
+
+model Desenvolvedor {
+  id             Int      @id @default(autoincrement())
+  nivelId        Int      @map("nivel_id")
+  nome           String
+  sexo           String
+  dataNascimento DateTime @map("data_nascimento")
+  idade          Int
+  hobby          String
+
+  Nivel Nivel @relation(fields: [nivelId], references: [id])
+
+  @@map("desenvolvedores")
+}
