@@ -11,7 +11,7 @@ model Nivel {
   id    Int    @id @default(autoincrement())
   nivel String
 
-  Desenvolvedor Desenvolvedor[]
+  Desenvolvedores Desenvolvedor[]
 
   @@map("niveis")
 }
@@ -22,7 +22,6 @@ model Desenvolvedor {
   nome           String
   sexo           String
   dataNascimento DateTime @map("data_nascimento")
-  idade          Int
   hobby          String
 
   Nivel Nivel @relation(fields: [nivelId], references: [id])
