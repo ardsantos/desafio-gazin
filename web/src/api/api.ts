@@ -1,6 +1,5 @@
 import { create } from "apisauce";
-import { NivelFormData } from "../pages/niveis/NivelForm";
-import { Nivel } from "../pages/niveis/utils/types";
+import { Nivel, NivelFormData } from "../pages/niveis/utils/types";
 
 interface RequestError {
   message: string;
