@@ -3,8 +3,8 @@ import { ThemeProvider } from "@mui/material/styles";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import PersistentDrawerLeft from "./components/PersistentDrawerLeft";
-import HomePage from "./pages/HomePage";
-import UserPage from "./pages/UserPage";
+import NiveisList from "./pages/niveis/NiveisList";
+import NivelForm from "./pages/niveis/NivelForm";
 import { darkTheme } from "./utils/theme";
 
 function App() {
@@ -14,8 +14,8 @@ function App() {
         <CssBaseline />
         <PersistentDrawerLeft />
         <Routes>
-          <Route path="/" Component={HomePage} />
-          <Route path="/*" Component={UserPage} />
+          <Route path="/niveis" Component={NiveisList} />
+          <Route path="/niveis/*" Component={NivelForm} />
         </Routes>
       </ThemeProvider>
     </>
