@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { api } from "../../api/api";
-import { MyTextField } from "../../components/TextField";
+import { TextInput } from "../../components/TextInput";
 import { SnackbarState } from "./NiveisList";
 import { Nivel, NivelFormData } from "./utils/types";
 
 const validationSchema = Yup.object().shape({
-  nivel: Yup.string().required("O campo Nível é obrigatório"),
+  nivel: Yup.string().required("O campo é obrigatório"),
 });
 
 export default function NivelForm() {
@@ -129,7 +129,7 @@ export default function NivelForm() {
           <Form>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <MyTextField
+                <TextInput
                   name="nivel"
                   label="Nível"
                   variant="outlined"

@@ -6,3 +6,7 @@ export interface Nivel {
 export interface NivelFormData {
   nivel: string;
 }
+
+export interface NivelDataToSubmit {
+  nivel: string;
+}

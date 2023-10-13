@@ -1,7 +1,7 @@
 import { TextField, TextFieldProps } from "@mui/material";
 import { FieldHookConfig, useField } from "formik";
 
-export const MyTextField = (props: TextFieldProps) => {
+export const TextInput = (props: TextFieldProps) => {
   const [field, meta] = useField(props as FieldHookConfig<string>);
   return (
     <>
