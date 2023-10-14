@@ -1,5 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import prisma from 'src/client';
 import { CreateNivelDto } from './dto/create-nivel.dto';
 import { FindAllNiveisDto } from './dto/find-all-niveis.dto';
 import { UpdateNivelDto } from './dto/update-nivel.dto';
@@ -7,7 +11,7 @@ import { NivelEntity } from './entities/nivel.entity';
 
 @Injectable()
 export class NiveisService {
-  private readonly prisma = new PrismaClient();
+  private readonly prisma = prisma;
 
   async create(createNivelDto: CreateNivelDto) {
     return this.prisma.nivel.create({
@@ -64,7 +68,7 @@ export class NiveisService {
     }
 
     if (nivel.Desenvolvedores.length) {
-      throw new NotFoundException(
+      throw new BadRequestException(
         `Nível (${id}) não pode ser removido porque possui desenvolvedores atribuídos.`,
       );
     }
