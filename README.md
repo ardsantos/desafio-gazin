@@ -7,11 +7,11 @@ Este projeto é uma ferramenta de gerenciamento de Desenvolvedores e Níveis de 
 <!--ts-->
 
 - [Features](#Features)
-- [Pré-Requisitos](#pre-requisitos)
-- [Rodando o Projeto (API)](<#rodando-o-projeto-(api)>)
-- [Rodando o Projeto (WEB)](<#rodando-o-projeto-(web)>)
+- [Pré-Requisitos](#pré-requisitos)
+- [Rodando o Projeto (API)](#rodando-o-projeto-api)
+- [Rodando o Projeto (WEB)](#rodando-o-projeto-web)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Considerações](#consideracoes)
+- [Considerações](#considerações)
 - [Autor](#autor)
 <!--te-->
 
