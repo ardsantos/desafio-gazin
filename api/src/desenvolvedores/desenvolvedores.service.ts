@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import prisma from 'src/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateDesenvolvedorDto } from './dto/create-desenvolvedor.dto';
 import { FindAllDesenvolvedoresDto } from './dto/find-all-desenvolvedores.dto';
 import { UpdateDesenvolvedorDto } from './dto/update-desenvolvedor.dto';
@@ -7,7 +7,7 @@ import { DesenvolvedorEntity } from './entities/desenvolvedor.entity';
 
 @Injectable()
 export class DesenvolvedoresService {
-  private readonly prisma = prisma;
+  constructor(private prisma: PrismaService) {}
 
   async create(createDesenvolvedorDto: CreateDesenvolvedorDto) {
     const nivelId = createDesenvolvedorDto.nivelId;

@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import prisma from 'src/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateNivelDto } from './dto/create-nivel.dto';
 import { FindAllNiveisDto } from './dto/find-all-niveis.dto';
 import { UpdateNivelDto } from './dto/update-nivel.dto';
@@ -11,7 +11,7 @@ import { NivelEntity } from './entities/nivel.entity';
 
 @Injectable()
 export class NiveisService {
-  private readonly prisma = prisma;
+  constructor(private prisma: PrismaService) {}
 
   async create(createNivelDto: CreateNivelDto) {
     return this.prisma.nivel.create({
