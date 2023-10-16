@@ -27,6 +27,13 @@ export interface DesenvolvedorDataToSubmit {
   hobby: string;
 }
 
+export interface DesenvolvedoresQueryParams {
+  nome?: string;
+  sexo?: string;
+  dataNascimento?: Date;
+  hobby?: string;
+}
+
 export interface SelectOption {
   label: string;
   value: string;

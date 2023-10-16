@@ -2,8 +2,13 @@ import { create } from "apisauce";
 import {
   Desenvolvedor,
   DesenvolvedorDataToSubmit,
+  DesenvolvedoresQueryParams,
 } from "../pages/desenvolvedores/utils/types";
-import { Nivel, NivelDataToSubmit } from "../pages/niveis/utils/types";
+import {
+  NiveisQueryParams,
+  Nivel,
+  NivelDataToSubmit,
+} from "../pages/niveis/utils/types";
 
 interface RequestError {
   message: string;
@@ -12,7 +17,8 @@ interface RequestError {
 const apiSauce = create({ baseURL: "http://localhost:3030" });
 
 const apiNiveis = {
-  findAll: async () => apiSauce.get<Nivel[], RequestError>("/niveis"),
+  findAll: async (params?: NiveisQueryParams) =>
+    apiSauce.get<Nivel[], RequestError>("/niveis", params),
   create: async (data: NivelDataToSubmit) =>
     apiSauce.post<Nivel, RequestError>("/niveis", data),
   findOne: async (id: number) =>
@@ -24,8 +30,8 @@ const apiNiveis = {
 };
 
 const apiDesenvolvedores = {
-  findAll: async () =>
-    apiSauce.get<Desenvolvedor[], RequestError>("/desenvolvedores"),
+  findAll: async (params?: DesenvolvedoresQueryParams) =>
+    apiSauce.get<Desenvolvedor[], RequestError>("/desenvolvedores", params),
   create: async (data: DesenvolvedorDataToSubmit) =>
     apiSauce.post<Desenvolvedor, RequestError>("/desenvolvedores", data),
   findOne: async (id: number) =>

@@ -10,3 +10,7 @@ export interface NivelFormData {
 export interface NivelDataToSubmit {
   nivel: string;
 }
+
+export interface NiveisQueryParams {
+  nivel?: string;
+}

@@ -17,9 +17,9 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../../api/api";
-import { Nivel } from "./utils/types";
+import { NiveisQueryParams, Nivel } from "./utils/types";
 
 export interface SnackbarState {
   open: boolean;
@@ -29,6 +29,8 @@ export interface SnackbarState {
 
 export default function NiveisList() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
   const snackBarInitialValues: SnackbarState = {
     open: false,
     severity: "success",
@@ -40,12 +42,12 @@ export default function NiveisList() {
   const [snackBarState, setSnackBarState] = useState<SnackbarState>(
     snackBarInitialValues
   );
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await api.niveis.findAll();
+      const response = await api.niveis.findAll(
+        searchParams as NiveisQueryParams
+      );
 
       if (response.ok) {
         const data = response.data!;
@@ -61,8 +63,7 @@ export default function NiveisList() {
     };
 
     fetchData();
-    // }, [currentPage, rowsPerPage]);
-  }, [listChangedFlag]);
+  }, [listChangedFlag, searchParams]);
 
   const handleEditClick = (id: number) => {
     navigate(`edit/${id}`);
@@ -86,16 +87,6 @@ export default function NiveisList() {
       });
     }
   };
-
-  // const handleChangePage = (event, newPage: number) => {
-  //   setCurrentPage(newPage);
-  // };
-
-  // const handleChangeRowsPerPage = (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   setRowsPerPage(parseInt(event.target.value, 10));
-  // };
 
   const handleCloseSnackbar = (
     _event?: React.SyntheticEvent | Event,
@@ -146,14 +137,6 @@ export default function NiveisList() {
             ))}
           </TableBody>
         </Table>
-        {/* <TablePagination
-        component="div"
-        count={100} // Total number of records, from the pagination information returned by the API
-        page={currentPage - 1}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      /> */}
         <Tooltip title="Adicionar Registro">
           <Button aria-label="add new record" onClick={() => navigate("new")}>
             <AddIcon />
