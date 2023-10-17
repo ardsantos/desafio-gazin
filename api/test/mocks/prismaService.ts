@@ -5,6 +5,7 @@ export const mockPrismaService = {
     findUnique: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
+    count: jest.fn(),
   },
   desenvolvedor: {
     create: jest.fn(),
@@ -12,5 +13,6 @@ export const mockPrismaService = {
     findUnique: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
+    count: jest.fn(),
   },
 };

@@ -3,6 +3,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { getPaginationQueryData } from 'src/common/dto/pagination-query.dto';
+import { Page } from 'src/common/entities/page.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateNivelDto } from './dto/create-nivel.dto';
 import { FindAllNiveisDto } from './dto/find-all-niveis.dto';
@@ -20,16 +23,22 @@ export class NiveisService {
   }
 
   async findAll(query: FindAllNiveisDto) {
-    const niveis = await this.prisma.nivel.findMany({
-      where: {
-        nivel: {
-          equals: query.nivel,
-          mode: 'insensitive',
-        },
+    const where: Prisma.NivelWhereInput = {
+      nivel: {
+        contains: query.nivel,
+        mode: 'insensitive',
       },
+    };
+
+    const totalCount = await this.prisma.nivel.count({ where });
+    const niveis = await this.prisma.nivel.findMany({
+      ...getPaginationQueryData(query),
+      where,
     });
 
-    return niveis.map((nivel) => new NivelEntity(nivel));
+    const entities = niveis.map((nivel) => new NivelEntity(nivel));
+
+    return new Page(totalCount, entities);
   }
 
   async findOne(id: number) {

@@ -1,4 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { endOfDay, startOfDay } from 'date-fns';
+import { getPaginationQueryData } from 'src/common/dto/pagination-query.dto';
+import { Page } from 'src/common/entities/page.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateDesenvolvedorDto } from './dto/create-desenvolvedor.dto';
 import { FindAllDesenvolvedoresDto } from './dto/find-all-desenvolvedores.dto';
@@ -25,44 +29,48 @@ export class DesenvolvedoresService {
   }
 
   async findAll(query: FindAllDesenvolvedoresDto) {
-    const dataNascimentoDayStart = new Date(query.dataNascimento);
-    const dataNascimentoDayEnd = new Date(query.dataNascimento);
+    const dataNascimento = new Date(query.dataNascimento);
+    const dataNascimentoDayStart = startOfDay(dataNascimento);
+    const dataNascimentoDayEnd = endOfDay(dataNascimento);
 
-    dataNascimentoDayStart.setHours(0, 0, 0, 0);
-    dataNascimentoDayEnd.setHours(23, 59, 59, 999);
-
-    const desenvolvedores = await this.prisma.desenvolvedor.findMany({
-      where: {
-        Nivel: {
-          nivel: {
-            equals: query.nivel,
-            mode: 'insensitive',
-          },
-        },
-        nome: {
-          equals: query.nome,
-          mode: 'insensitive',
-        },
-        dataNascimento: query.dataNascimento
-          ? {
-              gte: dataNascimentoDayStart,
-              lte: dataNascimentoDayEnd,
-            }
-          : undefined,
-        sexo: query.sexo,
-        hobby: {
-          contains: query.hobby,
+    const where: Prisma.DesenvolvedorWhereInput = {
+      Nivel: {
+        nivel: {
+          contains: query.nivel,
           mode: 'insensitive',
         },
       },
+      nome: {
+        contains: query.nome,
+        mode: 'insensitive',
+      },
+      dataNascimento: query.dataNascimento
+        ? {
+            gte: dataNascimentoDayStart,
+            lte: dataNascimentoDayEnd,
+          }
+        : undefined,
+      sexo: query.sexo,
+      hobby: {
+        contains: query.hobby,
+        mode: 'insensitive',
+      },
+    };
+
+    const totalCount = await this.prisma.desenvolvedor.count({ where });
+    const desenvolvedores = await this.prisma.desenvolvedor.findMany({
+      ...getPaginationQueryData(query),
+      where,
       include: {
         Nivel: true,
       },
     });
 
-    return desenvolvedores.map(
+    const entities = desenvolvedores.map(
       (desenvolvedor) => new DesenvolvedorEntity(desenvolvedor),
     );
+
+    return new Page(totalCount, entities);
   }
 
   async findOne(id: number) {

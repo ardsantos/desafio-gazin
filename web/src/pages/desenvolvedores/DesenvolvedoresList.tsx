@@ -19,7 +19,7 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../../api/api";
-import { formatDate } from "./utils/formatDate";
+import { formatDate, getDateStringFromFilterString } from "./utils/formatDate";
 import { Desenvolvedor, DesenvolvedoresQueryParams } from "./utils/types";
 
 export interface SnackbarState {
@@ -46,12 +46,18 @@ export default function DesenvolvedoresList() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await api.desenvolvedores.findAll(
-        searchParams as DesenvolvedoresQueryParams
+      const params = Object.fromEntries(
+        searchParams.entries()
+      ) as DesenvolvedoresQueryParams;
+
+      params.dataNascimento = getDateStringFromFilterString(
+        params.dataNascimento
       );
 
+      const response = await api.desenvolvedores.findAll(params);
+
       if (response.ok) {
-        const data = response.data!;
+        const data = response.data!.nodes;
 
         setData(data);
       } else {

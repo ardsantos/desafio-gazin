@@ -1,5 +1,6 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Page } from 'src/common/entities/page.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { mockPrismaService } from '../../../test/mocks/prismaService';
 import { CreateNivelDto } from '../dto/create-nivel.dto';
@@ -47,22 +48,59 @@ describe('NiveisService', () => {
     });
   });
 
-  it('should find all Niveis', async () => {
+  it('should call findAll Niveis and return a Page of them', async () => {
+    mockPrismaService.nivel.count = jest.fn().mockResolvedValueOnce(1);
     mockPrismaService.nivel.findMany = jest.fn().mockResolvedValueOnce([{}]);
 
     const query: FindAllNiveisDto = {};
 
+    const expectedWhere = {
+      nivel: {
+        contains: undefined,
+        mode: 'insensitive',
+      },
+    };
+
     const niveis = await service.findAll(query);
 
-    expect(niveis).toHaveLength(1);
-    expect(niveis[0]).toBeInstanceOf(NivelEntity);
+    expect(niveis).toBeInstanceOf(Page<NivelEntity>);
+    expect(niveis.totalCount).toBe(1);
+    expect(niveis.nodes[0]).toBeInstanceOf(NivelEntity);
+    expect(mockPrismaService.nivel.count).toHaveBeenLastCalledWith({
+      where: expectedWhere,
+    });
     expect(mockPrismaService.nivel.findMany).toHaveBeenLastCalledWith({
-      where: {
-        nivel: {
-          equals: undefined,
-          mode: 'insensitive',
-        },
+      take: 5,
+      where: expectedWhere,
+    });
+  });
+
+  it('should call findAll Niveis with filters and return a Page of them', async () => {
+    mockPrismaService.nivel.count = jest.fn().mockResolvedValueOnce(1);
+    mockPrismaService.nivel.findMany = jest.fn().mockResolvedValueOnce([{}]);
+
+    const query: FindAllNiveisDto = {
+      nivel: 'mockNivel',
+    };
+
+    const expectedWhere = {
+      nivel: {
+        contains: 'mockNivel',
+        mode: 'insensitive',
       },
+    };
+
+    const niveis = await service.findAll(query);
+
+    expect(niveis).toBeInstanceOf(Page<NivelEntity>);
+    expect(niveis.totalCount).toBe(1);
+    expect(niveis.nodes[0]).toBeInstanceOf(NivelEntity);
+    expect(mockPrismaService.nivel.count).toHaveBeenLastCalledWith({
+      where: expectedWhere,
+    });
+    expect(mockPrismaService.nivel.findMany).toHaveBeenLastCalledWith({
+      take: 5,
+      where: expectedWhere,
     });
   });
 

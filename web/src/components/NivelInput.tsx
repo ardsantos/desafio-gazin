@@ -13,7 +13,7 @@ export const NivelInput = (props: TextFieldProps) => {
       const response = await api.niveis.findAll();
 
       if (response.ok) {
-        const data = response.data!;
+        const data = response.data!.nodes;
 
         setOptions(
           data.map((nivel) => {

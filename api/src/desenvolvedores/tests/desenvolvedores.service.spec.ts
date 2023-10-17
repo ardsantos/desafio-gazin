@@ -1,5 +1,6 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Page } from 'src/common/entities/page.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { mockPrismaService } from '../../../test/mocks/prismaService';
 import { DesenvolvedoresService } from '../desenvolvedores.service';
@@ -93,41 +94,97 @@ describe('DesenvolvedoresService', () => {
     expect(mockPrismaService.desenvolvedor.create).not.toHaveBeenCalled();
   });
 
-  it('should find all Desenvolvedores', async () => {
+  it('should find all Desenvolvedores and return a Page of them', async () => {
+    mockPrismaService.desenvolvedor.count = jest.fn().mockResolvedValueOnce(1);
     mockPrismaService.desenvolvedor.findMany = jest
       .fn()
       .mockResolvedValueOnce([{}]);
 
     const query: FindAllDesenvolvedoresDto = {};
 
-    const desenvolvedores = await service.findAll(query);
-
-    expect(desenvolvedores).toHaveLength(1);
-    expect(desenvolvedores[0]).toBeInstanceOf(DesenvolvedorEntity);
-    expect(mockPrismaService.desenvolvedor.findMany).toHaveBeenLastCalledWith({
-      where: {
-        Nivel: {
-          nivel: {
-            equals: undefined,
-            mode: 'insensitive',
-          },
-        },
-        nome: {
-          equals: undefined,
-          mode: 'insensitive',
-        },
-        dataNascimento: undefined
-          ? {
-              gte: undefined,
-              lte: undefined,
-            }
-          : undefined,
-        sexo: undefined,
-        hobby: {
+    const expectedWhere = {
+      Nivel: {
+        nivel: {
           contains: undefined,
           mode: 'insensitive',
         },
       },
+      nome: {
+        contains: undefined,
+        mode: 'insensitive',
+      },
+      dataNascimento: undefined,
+      sexo: undefined,
+      hobby: {
+        contains: undefined,
+        mode: 'insensitive',
+      },
+    };
+
+    const desenvolvedores = await service.findAll(query);
+
+    expect(desenvolvedores).toBeInstanceOf(Page<DesenvolvedorEntity>);
+    expect(desenvolvedores.totalCount).toBe(1);
+    expect(desenvolvedores.nodes[0]).toBeInstanceOf(DesenvolvedorEntity);
+    expect(mockPrismaService.desenvolvedor.count).toHaveBeenLastCalledWith({
+      where: expectedWhere,
+    });
+    expect(mockPrismaService.desenvolvedor.findMany).toHaveBeenLastCalledWith({
+      take: 5,
+      where: expectedWhere,
+      include: {
+        Nivel: true,
+      },
+    });
+  });
+
+  it('should find all Desenvolvedores with filters and return a Page of them', async () => {
+    mockPrismaService.desenvolvedor.count = jest.fn().mockResolvedValueOnce(1);
+    mockPrismaService.desenvolvedor.findMany = jest
+      .fn()
+      .mockResolvedValueOnce([{}]);
+
+    const query: FindAllDesenvolvedoresDto = {
+      nome: 'mockNome',
+      nivel: 'mockNivel',
+      dataNascimento: new Date('2023-10-16T00:00:00.000'),
+      sexo: 'M',
+      hobby: 'mockHobby',
+    };
+
+    const expectedWhere = {
+      Nivel: {
+        nivel: {
+          contains: 'mockNivel',
+          mode: 'insensitive',
+        },
+      },
+      nome: {
+        contains: 'mockNome',
+        mode: 'insensitive',
+      },
+      dataNascimento: {
+        gte: new Date('2023-10-16T00:00:00.000'),
+        lte: new Date('2023-10-16T23:59:59.999'),
+      },
+      sexo: 'M',
+      hobby: {
+        contains: 'mockHobby',
+        mode: 'insensitive',
+      },
+    };
+
+    const desenvolvedores = await service.findAll(query);
+
+    expect(desenvolvedores).toBeInstanceOf(Page<DesenvolvedorEntity>);
+    expect(desenvolvedores.totalCount).toBe(1);
+    expect(desenvolvedores.nodes[0]).toBeInstanceOf(DesenvolvedorEntity);
+    expect(mockPrismaService.desenvolvedor.count).toHaveBeenLastCalledWith({
+      where: expectedWhere,
+    });
+    expect(mockPrismaService.desenvolvedor.findMany).toHaveBeenLastCalledWith({
+      take: 5,
+      where: expectedWhere,
       include: {
         Nivel: true,
       },

@@ -30,7 +30,7 @@ export interface DesenvolvedorDataToSubmit {
 export interface DesenvolvedoresQueryParams {
   nome?: string;
   sexo?: string;
-  dataNascimento?: Date;
+  dataNascimento?: string;
   hobby?: string;
 }
 

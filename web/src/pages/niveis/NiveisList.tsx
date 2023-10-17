@@ -45,12 +45,14 @@ export default function NiveisList() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await api.niveis.findAll(
-        searchParams as NiveisQueryParams
-      );
+      const params = Object.fromEntries(
+        searchParams.entries()
+      ) as NiveisQueryParams;
+
+      const response = await api.niveis.findAll(params);
 
       if (response.ok) {
-        const data = response.data!;
+        const data = response.data!.nodes;
 
         setData(data);
       } else {

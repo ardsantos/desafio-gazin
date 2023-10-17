@@ -12,4 +12,5 @@ export const ErrorMessages = {
       enumerator,
     )}.`,
   date: (field: string) => `O campo ${field} deve ser uma data válida.`,
+  object: (field: string) => `O campo ${field} deve ser um objeto.`,
 };

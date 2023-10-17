@@ -14,11 +14,16 @@ interface RequestError {
   message: string;
 }
 
+interface Page<T> {
+  totalCount: number;
+  nodes: T[];
+}
+
 const apiSauce = create({ baseURL: "http://localhost:3030" });
 
 const apiNiveis = {
   findAll: async (params?: NiveisQueryParams) =>
-    apiSauce.get<Nivel[], RequestError>("/niveis", params),
+    apiSauce.get<Page<Nivel>, RequestError>("/niveis", params),
   create: async (data: NivelDataToSubmit) =>
     apiSauce.post<Nivel, RequestError>("/niveis", data),
   findOne: async (id: number) =>
@@ -31,7 +36,7 @@ const apiNiveis = {
 
 const apiDesenvolvedores = {
   findAll: async (params?: DesenvolvedoresQueryParams) =>
-    apiSauce.get<Desenvolvedor[], RequestError>("/desenvolvedores", params),
+    apiSauce.get<Page<Desenvolvedor>, RequestError>("/desenvolvedores", params),
   create: async (data: DesenvolvedorDataToSubmit) =>
     apiSauce.post<Desenvolvedor, RequestError>("/desenvolvedores", data),
   findOne: async (id: number) =>
